@@ -17,7 +17,7 @@
  *
  */
 metadata {
-	definition (name: "August Lock Pro Z-Wave Lock with Doorsense", namespace: "rafaelborja", author: "Rafael Borja", runLocally: true, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock", vid:"generic-lock" ) {
+	definition (name: "August Lock Pro Z-Wave Lock with Doorsense2", namespace: "rafaelborja", author: "Rafael Borja", runLocally: true, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock", vid:"generic-lock" ) {
 		capability "Actuator"
 		capability "Lock"
 		capability "Polling"
@@ -131,8 +131,11 @@ import physicalgraph.zwave.commands.usercodev1.*
 def installed() {
 	// Device-Watch pings if no device events received for 1 hour (checkInterval)
 	sendEvent(name: "checkInterval", value: 1 * 60 * 60, displayed: false, data: [protocol: "zwave", hubHardwareId: device.hub.hardwareID, offlinePingable: "1"])
-
+	
+    createChildDevices()
+    
 	scheduleInstalledCheck()
+    
 }
 
 /**
@@ -372,9 +375,11 @@ def zwaveEvent(DoorLockOperationReport cmd) {
         if (cmd.doorCondition == 0x01 || cmd.doorCondition == 0x00) {
              log.debug "Door is closed"
              sendEvent(name: "contact", value: "closed", descriptionText: "Lock is closed")
+             updateChild("closed")
         } else {
              log.debug "Door is open"
              sendEvent(name: "contact", value: "open", descriptionText: "Lock is open")
+             updateChild("open")
         }
 		map.value = "locked"
 		map.descriptionText = "Locked"
@@ -393,10 +398,12 @@ def zwaveEvent(DoorLockOperationReport cmd) {
            if (cmd.doorCondition == 0x01 || cmd.doorCondition == 0x00 || cmd.doorCondition == 0x03) {
              log.debug "Door is closed"
              sendEvent(name: "contact", value: "closed", descriptionText: "Lock is closed")
+             updateChild("closed")
            } else {
              log.debug "Door is open"
              // 0x02
              sendEvent(name: "contact", value: "open", descriptionText: "Lock is open")
+             updateChild("open")
            }
        }
 
@@ -1818,7 +1825,7 @@ def readCodeSlotId(physicalgraph.zwave.commands.alarmv2.AlarmReport cmd) {
 
 
 
-
+/* VERIFY IF ITS NEEDED
 def zwaveEvent(physicalgraph.zwave.commands.sensorbinaryv1.SensorBinaryReport cmd) {
 	def map = [:]
 	map.value = cmd.sensorValue ? "open" : "closed"
@@ -1830,4 +1837,34 @@ def zwaveEvent(physicalgraph.zwave.commands.sensorbinaryv1.SensorBinaryReport cm
 		map.descriptionText = "$device.displayName is open"
 	}
 	createEvent(map)
+} */
+
+
+
+private void createChildDevices() {
+	// state.oldLabel = device.label
+
+	def i = 1
+	def child = addChildDevice("Child Contact Sensor",
+				"${device.deviceNetworkId}:$i", // TODO ADD CONSTANT
+				device.hubId,
+				[completedSetup: true,
+				 label: "${device.displayName} contact sensor $i",
+				 isComponent: true,
+				 componentName: "contact$i",
+				 componentLabel: "contact $i"])
+
+    updateChild("closed")
+}
+
+private updateChild(value) {
+    
+    String childDni = "${device.deviceNetworkId}:1" // TODO ADD CONSTANT
+    def child = childDevices.find{it.deviceNetworkId == childDni}
+    if (!child) {
+        log.error "Child device $childDni not found"
+    } else {
+        log.debug "Sending event to child device $childDni"
+        child?.sendEvent(name: "contact", value: value, descriptionText: "Door is $value", displayed: true, isStateChange: true) // TODO isStateChange dependent on initial value
+    } 
 }
