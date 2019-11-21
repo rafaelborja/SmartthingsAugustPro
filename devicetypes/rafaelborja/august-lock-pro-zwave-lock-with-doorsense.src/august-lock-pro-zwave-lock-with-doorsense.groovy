@@ -7,7 +7,6 @@
  *  Due to limitations (recognize contact sensor in automation and displaying information using tiles) this device handler creates a 
  *  child contact sensor (based on https://github.com/SmartThingsCommunity/SmartThingsPublic/blob/master/devicetypes/smartthings/child-contact-sensor.src/child-contact-sensor.groovy)
  *
- *  Based on Smartthings "Z-Wave Lock" example from Smartthings New Device Handler wizard.
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
  *
