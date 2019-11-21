@@ -7,6 +7,7 @@
  *  Due to limitations (recognize contact sensor in automation and displaying information using tiles) this device handler creates a 
  *  child contact sensor (based on https://github.com/SmartThingsCommunity/SmartThingsPublic/blob/master/devicetypes/smartthings/child-contact-sensor.src/child-contact-sensor.groovy)
  *
+ *  Based on Smartthings "Z-Wave Lock" example from Smartthings New Device Handler wizard.
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
  *
@@ -18,7 +19,7 @@
  *
  */
 metadata {
-	definition (name: "August Lock Pro ZWave Lock with Doorsense", namespace: "rafaelborja", author: "Rafael Borja", runLocally: true, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock" , vid:"generic-lock" ) {
+	definition (name: "August Lock Pro Zwave with Doorsense", namespace: "smartthings", author: "Rafael Borja", runLocally: false, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock" , vid:"generic-lock" ) {
 		capability "Actuator"
 		capability "Lock"
 		capability "Polling"
@@ -31,9 +32,54 @@ metadata {
 
 		// Generic
 		fingerprint inClusters: "0x62, 0x63"
-		
+
+		fingerprint deviceId: "0x4003", inClusters: "0x98"
+		fingerprint deviceId: "0x4004", inClusters: "0x98"
+
 		// August Lock Pro
 		fingerprint mfr:"033F", prod:"0001", model:"0001", deviceJoinName: "August Smart Lock Pro"
+
+		// KwikSet
+		fingerprint mfr:"0090", prod:"0001", model:"0236", deviceJoinName: "KwikSet SmartCode 910 Deadbolt Door Lock"
+		fingerprint mfr:"0090", prod:"0003", model:"0238", deviceJoinName: "KwikSet SmartCode 910 Deadbolt Door Lock"
+		fingerprint mfr:"0090", prod:"0001", model:"0001", deviceJoinName: "KwikSet SmartCode 910 Contemporary Deadbolt Door Lock"
+		fingerprint mfr:"0090", prod:"0003", model:"0339", deviceJoinName: "KwikSet SmartCode 912 Lever Door Lock"
+		fingerprint mfr:"0090", prod:"0003", model:"4006", deviceJoinName: "KwikSet SmartCode 914 Deadbolt Door Lock" //backlit version
+		fingerprint mfr:"0090", prod:"0003", model:"0440", deviceJoinName: "KwikSet SmartCode 914 Deadbolt Door Lock"
+		fingerprint mfr:"0090", prod:"0001", model:"0642", deviceJoinName: "KwikSet SmartCode 916 Touchscreen Deadbolt Door Lock"
+		fingerprint mfr:"0090", prod:"0003", model:"0642", deviceJoinName: "KwikSet SmartCode 916 Touchscreen Deadbolt Door Lock"
+		//zw:Fs type:4003 mfr:0090 prod:0003 model:0541 ver:4.79 zwv:4.34 lib:03 cc:5E,72,5A,98,73,7A sec:86,80,62,63,85,59,71,70,5D role:07 ff:8300 ui:8300
+		fingerprint mfr:"0090", prod:"0003", model:"0541", deviceJoinName: "KwikSet SmartCode 888 Touchpad Deadbolt Door Lock"
+		//zw:Fs type:4003 mfr:0090 prod:0003 model:0742 ver:4.10 zwv:4.34 lib:03 cc:5E,72,5A,98,73,7A sec:86,80,62,63,85,59,71,70,4E,8B,4C,5D role:07 ff:8300 ui:8300
+		fingerprint mfr:"0090", prod:"0003", model:"0742", deviceJoinName: "Kwikset Obsidian Lock"
+		// Schlage
+		fingerprint mfr:"003B", prod:"6341", model:"0544", deviceJoinName: "Schlage Touchscreen Deadbolt Door Lock"
+		fingerprint mfr:"003B", prod:"6341", model:"5044", deviceJoinName: "Schlage Touchscreen Deadbolt Door Lock"
+		fingerprint mfr:"003B", prod:"634B", model:"504C", deviceJoinName: "Schlage Connected Keypad Lever Door Lock"
+		fingerprint mfr:"003B", prod:"0001", model:"0468", deviceJoinName: "Schlage Connect Smart Deadbolt Door Lock" //BE468ZP
+		fingerprint mfr:"003B", prod:"0001", model:"0469", deviceJoinName: "Schlage Connect Smart Deadbolt Door Lock" //BE469ZP
+		// Yale
+		fingerprint mfr:"0129", prod:"0002", model:"0800", deviceJoinName: "Yale Touchscreen Deadbolt Door Lock" // YRD120
+		fingerprint mfr:"0129", prod:"0002", model:"0000", deviceJoinName: "Yale Touchscreen Deadbolt Door Lock" // YRD220, YRD240
+		fingerprint mfr:"0129", prod:"0002", model:"FFFF", deviceJoinName: "Yale Touchscreen Lever Door Lock" // YRD220
+		fingerprint mfr:"0129", prod:"0004", model:"0800", deviceJoinName: "Yale Push Button Deadbolt Door Lock" // YRD110
+		fingerprint mfr:"0129", prod:"0004", model:"0000", deviceJoinName: "Yale Push Button Deadbolt Door Lock" // YRD210
+		fingerprint mfr:"0129", prod:"0001", model:"0000", deviceJoinName: "Yale Push Button Lever Door Lock" // YRD210
+		fingerprint mfr:"0129", prod:"8002", model:"0600", deviceJoinName: "Yale Assure Lock" //YRD416, YRD426, YRD446
+		fingerprint mfr:"0129", prod:"0007", model:"0001", deviceJoinName: "Yale Keyless Connected Smart Door Lock"
+		fingerprint mfr:"0129", prod:"8004", model:"0600", deviceJoinName: "Yale Assure Lock Push Button Deadbolt" //YRD216
+		fingerprint mfr:"0129", prod:"6600", model:"0002", deviceJoinName: "Yale Conexis Lock"
+		fingerprint mfr:"0129", prod:"0001", model:"0409", deviceJoinName: "Yale Touchscreen Lever Door Lock" // YRL-220-ZW-605
+		fingerprint mfr:"0129", prod:"800B", model:"0F00", deviceJoinName: "Yale Assure Keypad Lever Door Lock" // YRL216-ZW2
+		fingerprint mfr:"0129", prod:"800C", model:"0F00", deviceJoinName: "Yale Assure Touchscreen Lever Door Lock" // YRL226-ZW2
+		fingerprint mfr:"0129", prod:"8002", model:"1000", deviceJoinName: "Yale Assure Lock" //YRD-ZWM-1
+		// Samsung
+		fingerprint mfr:"022E", prod:"0001", model:"0001", deviceJoinName: "Samsung Digital Lock", mnmn: "SmartThings", vid: "SmartThings-smartthings-Samsung_Smart_Doorlock" // SHP-DS705, SHP-DHP728, SHP-DHP525
+		// KeyWe
+		fingerprint mfr:"037B", prod:"0002", model:"0001", deviceJoinName: "KeyWe Lock" // GKW-2000D
+		fingerprint mfr:"037B", prod:"0003", model:"0001", deviceJoinName: "KeyWe Smart Rim Lock" // GKW-1000Z
+		// Philia
+		fingerprint mfr:"0366", prod:"0001", model:"0001", deviceJoinName: "Philia Smart Door Lock" // PDS-100
 	}
 
 	simulator {
