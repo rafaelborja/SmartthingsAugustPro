@@ -18,7 +18,7 @@
  *
  */
 metadata {
-	definition (name: "August Lock Pro ZWave Lock with Doorsense21", namespace: "rafaelborja", author: "Rafael Borja", runLocally: true, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock" , vid:"generic-lock" ) {
+	definition (name: "August Lock Pro ZWave Lock with Doorsense", namespace: "rafaelborja", author: "Rafael Borja", runLocally: true, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock" , vid:"generic-lock" ) {
 		capability "Actuator"
 		capability "Lock"
 		capability "Polling"
