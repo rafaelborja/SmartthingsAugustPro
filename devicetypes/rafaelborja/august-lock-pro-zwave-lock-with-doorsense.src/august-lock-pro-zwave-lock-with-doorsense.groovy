@@ -1,11 +1,9 @@
 /**
- *  August Lock Pro Z-Wave Lock With Doorsense - Z-Wave Lock
+ *  August Lock Pro With Doorsense - Z-Wave Lock
  *
  *  Copyright 2019 rafaelborja
  *  
  *  Z-Wave device handle for August Pro Smart Lock device handler with door sense.
- *  Due to limitations (recognize contact sensor in automation and displaying information using tiles) this device handler creates a 
- *  child contact sensor (based on https://github.com/SmartThingsCommunity/SmartThingsPublic/blob/master/devicetypes/smartthings/child-contact-sensor.src/child-contact-sensor.groovy)
  *
  *  Based on Smartthings "Z-Wave Lock" example from Smartthings New Device Handler wizard.
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -19,7 +17,7 @@
  *
  */
 metadata {
-	definition (name: "August Lock Pro Zwave with Doorsense", namespace: "smartthings", author: "Rafael Borja", runLocally: false, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock" , vid:"generic-lock" ) {
+	definition (name: "August Lock Pro Z-Wave Lock with Doorsense", namespace: "rafaelborja", author: "Rafael Borja", runLocally: true, minHubCoreVersion: '000.017.0012',  executeCommandsLocally: false, genericHandler: "Z-Wave" , ocfDeviceType: "oic.d.smartlock", vid:"generic-lock" ) {
 		capability "Actuator"
 		capability "Lock"
 		capability "Polling"
@@ -32,13 +30,12 @@ metadata {
 
 		// Generic
 		fingerprint inClusters: "0x62, 0x63"
-
 		fingerprint deviceId: "0x4003", inClusters: "0x98"
 		fingerprint deviceId: "0x4004", inClusters: "0x98"
-
+		
 		// August Lock Pro
 		fingerprint mfr:"033F", prod:"0001", model:"0001", deviceJoinName: "August Smart Lock Pro"
-
+		
 		// KwikSet
 		fingerprint mfr:"0090", prod:"0001", model:"0236", deviceJoinName: "KwikSet SmartCode 910 Deadbolt Door Lock"
 		fingerprint mfr:"0090", prod:"0003", model:"0238", deviceJoinName: "KwikSet SmartCode 910 Deadbolt Door Lock"
@@ -134,12 +131,9 @@ import physicalgraph.zwave.commands.usercodev1.*
 def installed() {
 	// Device-Watch pings if no device events received for 1 hour (checkInterval)
 	sendEvent(name: "checkInterval", value: 1 * 60 * 60, displayed: false, data: [protocol: "zwave", hubHardwareId: device.hub.hardwareID, offlinePingable: "1"])
-	
-    createContactChildDevice()
-    
+
 	scheduleInstalledCheck()
 }
-
 
 /**
  * Verify that we have actually received the lock's initial states.
@@ -172,8 +166,7 @@ def installedCheck() {
  */
 def uninstalled() {
 	def deviceName = device.displayName
-	log.debug "[DTH] Executing 'uninstalled()' for device ${device.displayName}"
-    removeChildDevices(getChildDevices())
+	log.debug "[DTH] Executing 'uninstalled()' for device $deviceName"
 	sendEvent(name: "lockRemoved", value: device.id, isStateChange: true, displayed: false)
 }
 
@@ -375,13 +368,13 @@ def zwaveEvent(DoorLockOperationReport cmd) {
 		map.descriptionText = cmd.doorCondition >> 1 ? "Unlocked" : "Locked"
 	} else if (cmd.doorLockMode == 0xFF) {
         // TODO rafaeb (add this event to return method
-        log.debug "doorCondition is $cmd.doorCondition"
+        log.debug "RAFEB doorCondition is $cmd.doorCondition"
         if (cmd.doorCondition == 0x01 || cmd.doorCondition == 0x00) {
              log.debug "Door is closed"
-             updateContactSensor("closed")
+             sendEvent(name: "contact", value: "closed", descriptionText: "Lock is closed")
         } else {
              log.debug "Door is open"
-             updateContactSensor("open")
+             sendEvent(name: "contact", value: "open", descriptionText: "Lock is open")
         }
 		map.value = "locked"
 		map.descriptionText = "Locked"
@@ -399,11 +392,11 @@ def zwaveEvent(DoorLockOperationReport cmd) {
        	   // 0x01 for open
            if (cmd.doorCondition == 0x01 || cmd.doorCondition == 0x00 || cmd.doorCondition == 0x03) {
              log.debug "Door is closed"
-             updateContactSensor("closed")
+             sendEvent(name: "contact", value: "closed", descriptionText: "Lock is closed")
            } else {
              log.debug "Door is open"
              // 0x02
-             updateContactSensor("open")
+             sendEvent(name: "contact", value: "open", descriptionText: "Lock is open")
            }
        }
 
@@ -1825,7 +1818,7 @@ def readCodeSlotId(physicalgraph.zwave.commands.alarmv2.AlarmReport cmd) {
 
 
 
-/* VERIFY IF ITS NEEDED
+
 def zwaveEvent(physicalgraph.zwave.commands.sensorbinaryv1.SensorBinaryReport cmd) {
 	def map = [:]
 	map.value = cmd.sensorValue ? "open" : "closed"
@@ -1837,60 +1830,4 @@ def zwaveEvent(physicalgraph.zwave.commands.sensorbinaryv1.SensorBinaryReport cm
 		map.descriptionText = "$device.displayName is open"
 	}
 	createEvent(map)
-} */
-
-
-
-private createContactChildDevice() {
-	log.debug "[DTH] Executing 'createContactChildDevice()' for device ${device.displayName}"
-    
-    log.debug "[DTH] Removing existing child devices ${getChildDevices()}"
-    removeChildDevices(getChildDevices())
-    
-    log.debug "[DTH] Adding contact child device"
-	def child = addChildDevice("Child Contact Sensor",
-				"${device.deviceNetworkId}:contact",
-				device.hubId,
-				[completedSetup: true,
-				 label: "${device.displayName} door contact sensor",
-				 isComponent: false,
-				 componentName: "contactsensor",
-				 componentLabel: "door contact sensor"])
-	
-    log.debug "[DTH] Contact child device added"
-    
-    updateChildContactDevice(contact? contact: "closed")
-}
-
-private removeChildDevices(delete) {
-    delete.each {
-        deleteChildDevice(it.deviceNetworkId)
-    }
-}
-
-/**
-  * Updates door sense contact value.
-  * @param value: "open" or "close"
-  */
-private updateContactSensor(value) {
-	log.debug "[DTH] Updating contact sensor to ${value}"
-	sendEvent(name: "contact", value: value, descriptionText: "Door is ${value}", displayed: true, isStateChange: contact != value)
-    updateChildContactDevice(value)
-}
-
-/**
-  * Updates child contact sensor device with door sense contact value.
-  * @param value: "open" or "close"
-  */
-private updateChildContactDevice(value) {
-	log.debug "[DTH] Updating child contact sensor to ${value}"
-    
-	String childDni = "${device.deviceNetworkId}:contact"
-	def child = childDevices.find{it.deviceNetworkId == childDni}
-    if (!child) {
-        log.error "Child device $childDni not found"
-    } else {
-    	log.debug "Sending update to child ${child.displayName} (deviceNetworkId ${child.deviceNetworkId}) value: $value"
-    	child.sendEvent(name: "contact", value: value, descriptionText: "Door is $value", displayed: true, isStateChange: contact != value)
-    }
 }
