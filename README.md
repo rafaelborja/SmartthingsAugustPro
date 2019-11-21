@@ -8,9 +8,9 @@ Z-Wave device handle for August Pro Smart Lock device handler with DoorSense™.
 
 Due to limitations (recognize contact sensor in automation and displaying information using tiles) this device handler creates a child contact sensor (based on new [child contact sensor device]( https://github.com/SmartThingsCommunity/SmartThingsPublic/blob/master/devicetypes/smartthings/child-contact-sensor.src/child-contact-sensor.groovy))
 
-
 ![Devices interfaces - New app vs Old App](images/screenshots/lock_and_child_device_new_vs_old_app.png)
-**Devices interfaces - New app vs Old App:**
+**Devices interfaces - New app vs Old App**
+
 
 ### Why use it?
 
@@ -23,10 +23,9 @@ August Smart Lock Pro was connected to both, Smartthings via Z-wave and August D
 
 August Smart Lock Pro firmware was 1.12.2-1.59.0.
 
-<center>
-**Automation in new app using Lock vs Child contact device:**
+
 ![Automation in new app using Lock vs Child contact device](images/screenshots/automation_in_new_app_lock_vs_child_device.png)
-</center>
+**Automation in new app using Lock vs Child contact device**
 
 
 ### Known issues
