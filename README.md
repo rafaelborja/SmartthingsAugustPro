@@ -26,9 +26,9 @@ August Smart Lock Pro firmware was 1.12.2-1.59.0.
 
 ### Install Instructions
 
-~~Follow [Smartthings Git Hub Integration Guide](https://docs.smartthings.com/en/latest/tools-and-ide/github-integration.html), using user rafaelborja and repository SmartThingsAugustPro.~~
+Follow [Smartthings Git Hub Integration Guide](https://docs.smartthings.com/en/latest/tools-and-ide/github-integration.html), using user rafaelborja and repository SmartThingsAugustPro.
 
-**Due to an unknown issue installation using GitHub is making the device handler unresponsive to events. Please create the [august-lock-pro-zwave-lock-with-doorsense device handler]( devicetypes/rafaelborja/august-lock-pro-zwave-lock-with-doorsense.src/august-lock-pro-zwave-lock-with-doorsense.groovy) source code by following the instructions bellow**
+FIXED: ~~**Due to an unknown issue installation using GitHub is making the device handler unresponsive to events. Please create the [august-lock-pro-zwave-lock-with-doorsense device handler]( devicetypes/rafaelborja/august-lock-pro-zwave-lock-with-doorsense.src/august-lock-pro-zwave-lock-with-doorsense.groovy) source code by following the instructions bellow**~~
 
 **Developer note: Please feel free to try Smartthings Git Hub Integration and validite if this issue is specific to my installation.**
 
