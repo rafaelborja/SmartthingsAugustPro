@@ -1,4 +1,9 @@
 # SmartThings August Smart Lock Pro Z-Wave Device handler with DoorSense™
+
+```diff
+- SEE INSTALL INSTRUCTIONS
+```
+
 Z-Wave device handle for August Pro Smart Lock device handler with DoorSense™.
 
 Due to limitations (recognize contact sensor in automation and displaying information using tiles) this device handler creates a child contact sensor (based on new [child contact sensor device]( https://github.com/SmartThingsCommunity/SmartThingsPublic/blob/master/devicetypes/smartthings/child-contact-sensor.src/child-contact-sensor.groovy))
@@ -17,10 +22,16 @@ August Smart Lock Pro firmware was 1.12.2-1.59.0.
 ### Known issues
 - Responsiveness to update child device using new app
 - Delays to execute commands using new app (1 to 3 seconds)
-- Any update to the device handler makes the DoorSense™ unresponsive during the development phase. The reason for it is unknown. When updating the device handler, delete it and create a new one to avoid this issue. 
+- Any update to the device handler makes the DoorSense™ unresponsive during the development phase. The reason for it is unknown. When updating the device handler, delete it and create a new one to avoid this issue. This issue somehow affects new installations using github integration
 
-### How to install it?
-Follow [Smartthings Git Hub Integration Guide](https://docs.smartthings.com/en/latest/tools-and-ide/github-integration.html), using user rafaelborja and repository SmartThingsAugustPro.
+### Install Instructions
+
+~~Follow [Smartthings Git Hub Integration Guide](https://docs.smartthings.com/en/latest/tools-and-ide/github-integration.html), using user rafaelborja and repository SmartThingsAugustPro.~~
+
+**Due to an unknown issue installation using GitHub is making the device handler unresponsive to events. Please create the [august-lock-pro-zwave-lock-with-doorsense device handler]( devicetypes/rafaelborja/august-lock-pro-zwave-lock-with-doorsense.src/august-lock-pro-zwave-lock-with-doorsense.groovy) source code by following the instructions bellow**
+
+**Developer note: Please feel free to try Smartthings Git Hub Integration and validite if this issue is specific to my installation.**
+
 You can also create create a new decive handler from code copying and pasting [child-contact-sensor device handler](devicetypes/rafaelborja/child-contact-sensor.src/child-contact-sensor.groovy) and [child-contact-sensor device handler]( devicetypes/rafaelborja/august-lock-pro-zwave-lock-with-doorsense.src/august-lock-pro-zwave-lock-with-doorsense.groovy) source code
 ### FAQ
 #### Why a child door sensor?
