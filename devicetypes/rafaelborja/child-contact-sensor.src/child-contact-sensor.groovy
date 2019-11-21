@@ -12,7 +12,7 @@
  *
  */
 metadata {
-	definition(name: "Child Contact Sensor", namespace: "smartthings", author: "SmartThings", mnmn: "SmartThings", vid: "generic-contact", ocfDeviceType: "x.com.st.d.sensor.contact") {
+	definition(name: "Child Contact Sensor", namespace: "rafaelborja", author: "SmartThings", mnmn: "SmartThings", vid: "generic-contact", ocfDeviceType: "x.com.st.d.sensor.contact") {
 		capability "Contact Sensor"
 		capability "Sensor"
 		capability "Health Check"
