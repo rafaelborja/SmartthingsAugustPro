@@ -19,6 +19,12 @@ August Smart Lock Pro was connected to both, Smartthings via Z-wave and August D
 
 August Smart Lock Pro firmware was 1.12.2-1.59.0.
 
+**Devices interfaces - New app vs Old App:**
+![Devices interfaces - New app vs Old App](images/screenshots/lock_and_child_device_new_vs_old_app.png)
+
+**Automation in new app using Lock vs Child contact device:**
+![Automation in new app using Lock vs Child contact device](images/screenshots/automation_in_new_app_lock_vs_child_device.png)
+
 ### Known issues
 - Responsiveness to update child device using new app
 - Delays to execute commands using new app (1 to 3 seconds)
