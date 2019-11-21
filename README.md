@@ -47,4 +47,4 @@ You can also create create a new decive handler from code copying and pasting [c
 Due to a bug in Smartthings, only a child device can be used on standard automation app.
 
 ### Contributions
-Please feel free to contribute with suggestions and **pull requests**.
+Please feel free to contribute with suggestions forks, and **pull requests** at https://github.com/rafaelborja/SmartThingsAugustPro
