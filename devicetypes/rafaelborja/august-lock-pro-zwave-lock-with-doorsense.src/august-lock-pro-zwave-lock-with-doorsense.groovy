@@ -374,13 +374,12 @@ def zwaveEvent(DoorLockOperationReport cmd) {
 		map.value = cmd.doorCondition >> 1 ? "unlocked" : "locked"
 		map.descriptionText = cmd.doorCondition >> 1 ? "Unlocked" : "Locked"
 	} else if (cmd.doorLockMode == 0xFF) {
-        // TODO rafaeb (add this event to return method
         log.debug "doorCondition is $cmd.doorCondition"
         if (cmd.doorCondition == 0x01 || cmd.doorCondition == 0x00) {
-             log.debug "Door is closed"
+             log.debug "[DTH] Door is closed"
              updateContactSensor("closed")
         } else {
-             log.debug "Door is open"
+             log.debug "[DTH] Door is open"
              updateContactSensor("open")
         }
 		map.value = "locked"
@@ -392,10 +391,9 @@ def zwaveEvent(DoorLockOperationReport cmd) {
 		map.value = "unlocked with timeout"
 		map.descriptionText = "Unlocked with timeout"
 	}  else {
-       // TODO rafaeb (add this event to return method
        if (cmd.doorLockMode == 0x00) {
-           log.debug "RAFEB doorLockMode is 00x0"
-           log.debug "RAFEB doorCondition is $cmd.doorCondition"
+           log.debug "[DTH] doorLockMode is 00x0"
+           log.debug "[DTH]  doorCondition is $cmd.doorCondition"
        	   // 0x01 for open
            if (cmd.doorCondition == 0x01 || cmd.doorCondition == 0x00 || cmd.doorCondition == 0x03) {
              log.debug "Door is closed"
@@ -1874,8 +1872,12 @@ private removeChildDevices(delete) {
   */
 private updateContactSensor(value) {
 	log.debug "[DTH] Updating contact sensor to ${value}"
-	sendEvent(name: "contact", value: value, descriptionText: "Door is ${value}", displayed: true, isStateChange: contact != value)
-    updateChildContactDevice(value)
+    def current_state = device.currentState("contact")?.value
+    def isStateChange = value != current_state
+	sendEvent(name: "contact", value: value, descriptionText: "Door is ${value}", displayed: true, isStateChange: isStateChange)
+    if (isStateChange) {
+    	updateChildContactDevice(value)
+    }
 }
 
 /**
@@ -1890,7 +1892,7 @@ private updateChildContactDevice(value) {
     if (!child) {
         log.error "Child device $childDni not found"
     } else {
-    	log.debug "Sending update to child ${child.displayName} (deviceNetworkId ${child.deviceNetworkId}) value: $value"
-    	child.sendEvent(name: "contact", value: value, descriptionText: "Door is $value", displayed: true, isStateChange: contact != value)
+    	log.debug "[DTH] Sending update to child ${child.displayName} (deviceNetworkId ${child.deviceNetworkId}) value: $value"
+    	child.sendEvent(name: "contact", value: value, descriptionText: "Door is $value", displayed: true, isStateChange: true)
     }
 }
