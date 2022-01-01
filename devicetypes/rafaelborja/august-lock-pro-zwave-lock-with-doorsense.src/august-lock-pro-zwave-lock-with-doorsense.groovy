@@ -1851,9 +1851,7 @@ private createContactChildDevice() {
 				device.hubId,
 				[completedSetup: true,
 				 label: "${device.displayName} door contact sensor",
-				 isComponent: false,
-				 componentName: "contactsensor",
-				 componentLabel: "door contact sensor"])
+				 isComponent: false])
 	
     log.debug "[DTH] Contact child device added"
     
